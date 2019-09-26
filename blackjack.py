@@ -78,13 +78,14 @@ class Hand:
 class Game:
 
     def __init__(self):
+
         deck = Deck()
         shuffle(deck.cards)
-
         player_hand = Hand()
         dealer_hand = Hand()
         stop = False
 
+        ### Player's turn:
         player_hand.hit(deck)
         player_hand.hit(deck)
 
@@ -112,6 +113,7 @@ class Game:
                     stop = True
                     print("\nYou stay.")
 
+        ### Dealer's turn:
         dealer_hand.hit(deck)
         dealer_hand.hit(deck)
         sleep(2)
@@ -130,6 +132,7 @@ class Game:
         else:
             print("\nDealer stays.")
 
+        ### Final scores:
         player_score = player_hand.get_play_value()
         dealer_score = dealer_hand.get_play_value()
 
@@ -147,13 +150,14 @@ class Game:
         else:
             print("Tie game!")
 
+        ### Play again prompt:
         sleep(2)
         play_again = input("\nPlay again? (y/n):")
 
         if play_again.lower() == "y":
             Game()
         else:
-            print("\nThanks for playing!")
+            print("\nThanks for playing!\n\n")
 
 
 if __name__ == "__main__":
