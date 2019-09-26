@@ -8,7 +8,7 @@ class Card:
         self.char = char
 
     def __repr__(self):
-        return f"{self.char} of {self.suit}"
+        return f"{self.char}{self.suit}"
 
 
 class Deck:
@@ -17,7 +17,7 @@ class Deck:
     def __init__(self):
 
         chars = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
-        suits = ["hearts", "clubs", "spades", "diamonds"]
+        suits = ["♥", "♣", "♠", "♦"]
         self.cards = [Card(suit, char)
                       for suit in suits
                         for char in chars]
@@ -31,11 +31,8 @@ class Deck:
 
 class Hand:
 
-    def __init__(self): #, dealer=False):
+    def __init__(self):
         self.cards = []
-        # self.dealer = dealer
-        # if self.dealer:
-            
 
     def __repr__(self):
         return f"{self.cards}"
@@ -65,7 +62,6 @@ class Hand:
 
     def get_hit_value(self):
 
-        aces = 0
         hit_value = 0
 
         for card in self.cards:
@@ -73,13 +69,8 @@ class Hand:
                 hit_value += card.char
             elif card.char == "A":
                 hit_value += 1
-                aces += 1
             else:
                 hit_value += 10
-
-        while aces and hit_value > 14:
-            hit_value -= 10
-            aces -= 1
 
         return hit_value
 
@@ -98,33 +89,34 @@ class Game:
         player_hand.hit(deck)
 
         print("\n\nWelcome to the blackjack table. Let's play!")
-        sleep(2)
-        print(f"You start. Your hand: {player_hand}")
+        sleep(1)
+        print(f"\n\nYou start. Your hand: {player_hand}")
 
         while stop == False:
-
-            sleep(2)
-            player_input = input("Would you like to hit? (y/n):")
-
-            if player_input == "y":
-                player_hand.hit(deck)
-                print(f"\nYou hit. Your hand: {player_hand}")
-                sleep(2)
-                if player_hand.get_play_value() > 21:
-                    stop = True
-                    print("Oops – you bust!")
-                if player_hand.get_play_value() == 21:
-                    stop = True
-                    print("You reached 21!")
-            else:
+            if player_hand.get_play_value() == 21:
                 stop = True
-                print("\nYou check.")
+                print("You reached 21!")
+            
+            elif player_hand.get_play_value() > 21:
+                stop = True
+                print("Oops – you bust!")
+            
+            else:
+                player_input = input("Would you like to hit? (y/n):")
+
+                if player_input == "y":
+                    player_hand.hit(deck)
+                    print(f"\nYou hit. Your hand: {player_hand}")
+                    
+                else:
+                    stop = True
+                    print("\nYou stay.")
 
         dealer_hand.hit(deck)
         dealer_hand.hit(deck)
         sleep(2)
 
-        print(f"\nDealer's turn. Dealer's hand: {dealer_hand}")
+        print(f"\n\nDealer's turn. Dealer's hand: {dealer_hand}")
         while dealer_hand.get_hit_value() < 17:
             dealer_hand.hit(deck)
             sleep(2)
@@ -136,18 +128,15 @@ class Game:
         elif dealer_hand.get_play_value() == 21:
             print("Dealer reached 21!")
         else:
-            print("\nDealer checks.")
+            print("\nDealer stays.")
 
         player_score = player_hand.get_play_value()
         dealer_score = dealer_hand.get_play_value()
 
         sleep(2)
-        print("\nFINAL SCORES")
-        sleep(2)
+        print("\n\nFINAL SCORES")
         print(f"You: {player_score}")
-        sleep(2)
         print(f"Dealer: {dealer_score}\n")
-        sleep(2)
 
         if (player_score > dealer_score and player_score <= 21) \
             or (player_score <= 21 and dealer_score >= 21):
